@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1045 &1
+EditorBuildSettings:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/Title.unity
+    guid: 3a59ee4d532663547b2dea4ce3501c9f
+  - enabled: 1
+    path: Assets/Scenes/ClassicMode.unity
+    guid: 8355a1ca267861948b741e961a0d623d
+  - enabled: 1
+    path: Assets/Scenes/InfinityMode.unity
+    guid: 40adde328afb0ab46b2d3bc72528e432
+  - enabled: 1
+    path: Assets/Scenes/HardCoreMode.unity
+    guid: 05d02c44a04cc1442a449da0c81ff634
+  - enabled: 1
+    path: Assets/Scenes/GameOver.unity
+    guid: b4fd651f60d32214e8facab50cd219d3
+  - enabled: 1
+    path: Assets/Scenes/EndingCredit.unity
+    guid: ba429e6173c28cb4b92a449fd002ba03
+  - enabled: 1
+    path: Assets/Scenes/Result.unity
+    guid: 9ed95bd1c8433624bbbf4269c38051ce
+  m_configObjects: {}
+  m_UseUCBPForAssetBundles: 0

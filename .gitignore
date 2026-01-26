@@ -1,0 +1,41 @@
+# Unity folders
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Bb]uildTest/
+[Ll]ogs/
+[Mm]emoryCaptures/
+
+# Unity Burst
+*BurstDebugInformation_DoNotShip*
+
+# IDE / Editor
+.vscode/
+.idea/
+.utmp/
+.vsconfig
+
+# Build files
+*.apk
+*.aab
+
+# Keystore (SECURITY)
+*.keystore
+
+# User settings
+UserSettings/
+
+# Project files
+*.csproj
+*.unityproj
+*.sln
+*.user
+*.pidb
+*.booproj
+
+sysinfo.txt
+
+# Firebase native plugins
+Assets/Firebase/Plugins/**

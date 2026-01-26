@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:keep="@string/gcm_defaultSenderId,@string/google_storage_bucket,@string/project_id,@string/google_api_key,@string/google_crash_reporting_api_key,@string/google_app_id,@string/default_android_client_id,@string/default_web_client_id">
+  <string name="gcm_defaultSenderId" translatable="false">853773184056</string>
+  <string name="google_storage_bucket" translatable="false">unluckyholiday-d6058.firebasestorage.app</string>
+  <string name="project_id" translatable="false">unluckyholiday-d6058</string>
+  <string name="google_api_key" translatable="false">AIzaSyCV4f9zDJxiYz7CkW3RUr7waqApC3hutys</string>
+  <string name="google_crash_reporting_api_key" translatable="false">AIzaSyCV4f9zDJxiYz7CkW3RUr7waqApC3hutys</string>
+  <string name="google_app_id" translatable="false">1:853773184056:android:d4d541077915c04d3ccacd</string>
+  <string name="default_android_client_id" translatable="false">853773184056-17uk7ndeh3a2r7ui09rng8ih8gttub90.apps.googleusercontent.com</string>
+  <string name="default_web_client_id" translatable="false">853773184056-rbt60sjs34um28k79sdpi5cr4djupa99.apps.googleusercontent.com</string>
+</resources>

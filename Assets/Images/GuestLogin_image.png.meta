@@ -1,0 +1,494 @@
+fileFormatVersion: 2
+guid: 65e5813d76a633f439585100e7de4274
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -8800171665498232396
+    second: GuestLogin_image_0
+  - first:
+      213: 5436208046230087735
+    second: GuestLogin_image_1
+  - first:
+      213: -6191763366077478117
+    second: GuestLogin_image_2
+  - first:
+      213: -4295175188636688339
+    second: GuestLogin_image_3
+  - first:
+      213: 874226359744436534
+    second: GuestLogin_image_4
+  - first:
+      213: -5006092397184065607
+    second: GuestLogin_image_5
+  - first:
+      213: 704122708271126268
+    second: GuestLogin_image_6
+  - first:
+      213: -6899087313694114547
+    second: GuestLogin_image_7
+  - first:
+      213: -1534562493036158770
+    second: GuestLogin_image_8
+  - first:
+      213: -6326204445036157401
+    second: GuestLogin_image_9
+  - first:
+      213: -4690954621500994100
+    second: GuestLogin_image_10
+  - first:
+      213: -3215738899120338478
+    second: GuestLogin_image_11
+  - first:
+      213: 9158156948068431027
+    second: GuestLogin_image_12
+  - first:
+      213: 4972188599188100833
+    second: GuestLogin_image_13
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: GuestLogin_image_0
+      rect:
+        serializedVersion: 2
+        x: 11
+        y: 0
+        width: 672
+        height: 1024
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4b9258bde728fd580800000000000000
+      internalID: -8800171665498232396
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GuestLogin_image_1
+      rect:
+        serializedVersion: 2
+        x: 271
+        y: 371
+        width: 58
+        height: 73
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7382aa07a6a417b40800000000000000
+      internalID: 5436208046230087735
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GuestLogin_image_2
+      rect:
+        serializedVersion: 2
+        x: 350
+        y: 425
+        width: 156
+        height: 83
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b1bccaf1600721aa0800000000000000
+      internalID: -6191763366077478117
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GuestLogin_image_3
+      rect:
+        serializedVersion: 2
+        x: 543
+        y: 480
+        width: 67
+        height: 74
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d202d393ce87464c0800000000000000
+      internalID: -4295175188636688339
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GuestLogin_image_4
+      rect:
+        serializedVersion: 2
+        x: 615
+        y: 480
+        width: 58
+        height: 73
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 63999d90e30e12c00800000000000000
+      internalID: 874226359744436534
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GuestLogin_image_5
+      rect:
+        serializedVersion: 2
+        x: 681
+        y: 479
+        width: 49
+        height: 74
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9bf5f09fc79c68ab0800000000000000
+      internalID: -5006092397184065607
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GuestLogin_image_6
+      rect:
+        serializedVersion: 2
+        x: 700
+        y: 0
+        width: 813
+        height: 1024
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cf659c06fdb85c900800000000000000
+      internalID: 704122708271126268
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GuestLogin_image_7
+      rect:
+        serializedVersion: 2
+        x: 733
+        y: 480
+        width: 54
+        height: 74
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d0dbbd024a48140a0800000000000000
+      internalID: -6899087313694114547
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GuestLogin_image_8
+      rect:
+        serializedVersion: 2
+        x: 791
+        y: 481
+        width: 55
+        height: 72
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ec021f40b8324bae0800000000000000
+      internalID: -1534562493036158770
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GuestLogin_image_9
+      rect:
+        serializedVersion: 2
+        x: 877
+        y: 481
+        width: 48
+        height: 72
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7266f1d239ec438a0800000000000000
+      internalID: -6326204445036157401
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GuestLogin_image_10
+      rect:
+        serializedVersion: 2
+        x: 923
+        y: 480
+        width: 68
+        height: 73
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ccdc4ff10a166eeb0800000000000000
+      internalID: -4690954621500994100
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GuestLogin_image_11
+      rect:
+        serializedVersion: 2
+        x: 1070
+        y: 481
+        width: 19
+        height: 71
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2d9c68b42866f53d0800000000000000
+      internalID: -3215738899120338478
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GuestLogin_image_12
+      rect:
+        serializedVersion: 2
+        x: 1096
+        y: 479
+        width: 60
+        height: 74
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3b4f4e6e83f481f70800000000000000
+      internalID: 9158156948068431027
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GuestLogin_image_13
+      rect:
+        serializedVersion: 2
+        x: 1172
+        y: 368
+        width: 60
+        height: 59
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1e69adaef23c00540800000000000000
+      internalID: 4972188599188100833
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      GuestLogin_image_0: -8800171665498232396
+      GuestLogin_image_1: 5436208046230087735
+      GuestLogin_image_10: -4690954621500994100
+      GuestLogin_image_11: -3215738899120338478
+      GuestLogin_image_12: 9158156948068431027
+      GuestLogin_image_13: 4972188599188100833
+      GuestLogin_image_2: -6191763366077478117
+      GuestLogin_image_3: -4295175188636688339
+      GuestLogin_image_4: 874226359744436534
+      GuestLogin_image_5: -5006092397184065607
+      GuestLogin_image_6: 704122708271126268
+      GuestLogin_image_7: -6899087313694114547
+      GuestLogin_image_8: -1534562493036158770
+      GuestLogin_image_9: -6326204445036157401
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

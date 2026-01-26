@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "853773184056",
+    "project_id": "unluckyholiday-d6058",
+    "storage_bucket": "unluckyholiday-d6058.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:853773184056:android:d4d541077915c04d3ccacd",
+        "android_client_info": {
+          "package_name": "com.dopas.unluckyholiday"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "853773184056-17uk7ndeh3a2r7ui09rng8ih8gttub90.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.dopas.unluckyholiday",
+            "certificate_hash": "23ffad73242bd66161bc2b43ede8df3cfe3ab974"
+          }
+        },
+        {
+          "client_id": "853773184056-rbt60sjs34um28k79sdpi5cr4djupa99.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCV4f9zDJxiYz7CkW3RUr7waqApC3hutys"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "853773184056-rbt60sjs34um28k79sdpi5cr4djupa99.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
