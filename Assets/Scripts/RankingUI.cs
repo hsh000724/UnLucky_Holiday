@@ -110,10 +110,13 @@ public class RankingUI : MonoBehaviour
 
         if (topTexts[0] == null) return;
 
+        // 텍스트 초기화
+        for (int i = 0; i < 3; i++) topTexts[i].text = $"{i + 1}등: 데이터 로딩 중...";
+        if (middleTexts != null)
+            for (int i = 0; i < middleTexts.Length; i++) middleTexts[i].text = $"{i + 4}등: -";
+
+        // 서버에서 데이터를 가져옴 (복합 조건 정렬을 위해 클라이언트에서 정렬 수행)
         db.Collection(collectionName)
-            .OrderByDescending("bestScore.stageReached")
-            .OrderByDescending("bestScore.survivalTime")
-            .Limit(10)
             .GetSnapshotAsync()
             .ContinueWithOnMainThread(task =>
             {
@@ -124,16 +127,60 @@ public class RankingUI : MonoBehaviour
                 }
 
                 QuerySnapshot snapshot = task.Result;
+                List<DocumentSnapshot> docList = new List<DocumentSnapshot>(snapshot.Documents);
+
+                // --- 커스텀 정렬 로직 시작 ---
+                docList.Sort((a, b) =>
+                {
+                    var dataA = a.ToDictionary();
+                    var dataB = b.ToDictionary();
+
+                    if (!dataA.ContainsKey("bestScore") || !dataB.ContainsKey("bestScore")) return 0;
+
+                    var scoreA = dataA["bestScore"] as Dictionary<string, object>;
+                    var scoreB = dataB["bestScore"] as Dictionary<string, object>;
+
+                    bool clearedA = scoreA.ContainsKey("isCleared") ? (bool)scoreA["isCleared"] : false;
+                    bool clearedB = scoreB.ContainsKey("isCleared") ? (bool)scoreB["isCleared"] : false;
+
+                    int stageA = ConvertToInt(scoreA["stageReached"]);
+                    int stageB = ConvertToInt(scoreB["stageReached"]);
+
+                    float timeA = ConvertToFloat(scoreA["survivalTime"]);
+                    float timeB = ConvertToFloat(scoreB["survivalTime"]);
+
+                    // 1순위: 클리어 여부 (클리어한 사람이 상위)
+                    if (clearedA != clearedB)
+                        return clearedB.CompareTo(clearedA);
+
+                    if (clearedA) // 둘 다 클리어한 경우
+                    {
+                        // 2순위: 도달 스테이지가 낮을수록 상위 (보스까지 빨리 도달)
+                        if (stageA != stageB) return stageA.CompareTo(stageB);
+                        // 3순위: 플레이 타임이 짧을수록 상위
+                        return timeA.CompareTo(timeB);
+                    }
+                    else // 둘 다 클리어 못한 경우
+                    {
+                        // 2순위: 도달 스테이지가 높을수록 상위
+                        if (stageA != stageB) return stageB.CompareTo(stageA);
+                        // 3순위: 플레이 타임이 길수록 상위 (더 오래 생존)
+                        return timeB.CompareTo(timeA);
+                    }
+                });
+                // --- 커스텀 정렬 로직 끝 ---
+
                 int rank = 1;
                 bool foundMyRecord = false;
                 string currentNickname = AuthManager.Instance.UserNickname;
 
+                // UI 텍스트 다시 초기화
                 for (int i = 0; i < 3; i++) topTexts[i].text = $"{i + 1}등: -";
                 if (middleTexts != null)
                     for (int i = 0; i < middleTexts.Length; i++) middleTexts[i].text = $"{i + 4}등: -";
                 if (myRecord != null) myRecord.text = $"내 기록: {currentNickname} - 기록 없음";
 
-                foreach (DocumentSnapshot doc in snapshot.Documents)
+                foreach (DocumentSnapshot doc in docList)
                 {
                     Dictionary<string, object> data = doc.ToDictionary();
                     string nickname = data.ContainsKey("nickname") ? data["nickname"].ToString() : "Unknown";
@@ -149,27 +196,26 @@ public class RankingUI : MonoBehaviour
                         cleared = (bool)bestScore["isCleared"];
                     }
 
-                    // 상세 정보 문자열
                     string recordDisplay = $"Stage {stage}, {time:F1}s ({(cleared ? "클리어" : "도전 중")})";
 
-                    // 순위에 따른 텍스트 설정
+                    // 상위 3등 표시
                     if (rank <= 3)
                     {
-                        // 1,2,3등은 닉네임만 표시
                         topTexts[rank - 1].text = $"{rank}등: {nickname}";
                     }
+                    // 4등 ~ 10등 표시
                     else if (rank <= 10 && middleTexts != null && middleTexts.Length >= (rank - 3))
                     {
-                        // 4등부터는 기존처럼 상세 정보 포함
                         middleTexts[rank - 4].text = $"{rank}등: {nickname} - {recordDisplay}";
                     }
 
-                    // 내 기록은 순위와 상관없이 항상 상세 정보 표시
+                    // 내 기록 확인 (ID 비교)
                     if (doc.Id == myUserId && myRecord != null)
                     {
                         myRecord.text = $"내 기록: {nickname} - {recordDisplay} (순위: {rank}등)";
                         foundMyRecord = true;
                     }
+
                     rank++;
                 }
 
