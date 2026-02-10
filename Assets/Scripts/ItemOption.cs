@@ -215,8 +215,8 @@ public class ItemOption : MonoBehaviour
             }
             else
             {
-                // 🔥기존 데미지에 1.7을 곱하여 70%씩 위력 강화
-                GameManager.instance.weapon1.damage *= 1.7f;
+                // 🔥기존 데미지에 1.5을 곱하여 50%씩 위력 강화
+                GameManager.instance.weapon1.damage *= 1.5f;
 
                 messageManager.ShowMessage("자기장의 위력이 대폭 강화됩니다!");
                 Debug.Log("현재 자기장 데미지: " + GameManager.instance.weapon1.damage);
