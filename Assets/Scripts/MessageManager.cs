@@ -5,43 +5,72 @@ using System.Collections.Generic;
 
 public class MessageManager : MonoBehaviour
 {
-    public GameObject messagePrefab;         // 텍스트 프리팹 (Text or TMP)
-    public Transform messageParent;          // 메시지를 담을 부모 (Vertical Layout Group 추천)
+    public GameObject messagePrefab;
+    public Transform messageParent;
     public int maxMessages = 5;
 
-    private Queue<GameObject> messageQueue = new Queue<GameObject>();
+    public Transform target;
+    public Vector3 offset = new Vector3(0, 1f, 0);
 
+    public float floatDistance = 50f; // 떠오르는 거리 (픽셀)
+
+    private Queue<GameObject> messageQueue = new Queue<GameObject>();
+    private Camera mainCam;
+
+    void Start()
+    {
+        mainCam = Camera.main;
+    }
+
+    // 🔹 기존 시그니처 유지
     public void ShowMessage(string msg, float duration = 5f, Color? color = null)
     {
-        // 메시지 오브젝트 생성
         GameObject messageGO = Instantiate(messagePrefab, messageParent);
+
         Text msgText = messageGO.GetComponent<Text>();
         msgText.text = msg;
         msgText.color = color ?? Color.white;
 
+        CanvasGroup canvasGroup = messageGO.GetComponent<CanvasGroup>();
+        if (canvasGroup == null)
+            canvasGroup = messageGO.AddComponent<CanvasGroup>();
+
         messageQueue.Enqueue(messageGO);
 
-        // 오래된 메시지 제거
         if (messageQueue.Count > maxMessages)
         {
             GameObject oldMsg = messageQueue.Dequeue();
             Destroy(oldMsg);
         }
 
-        // 일정 시간 후 자동 제거
-        StartCoroutine(RemoveAfterDelay(messageGO, duration));
+        StartCoroutine(RemoveAfterDelay(messageGO, canvasGroup, duration));
     }
 
-    IEnumerator RemoveAfterDelay(GameObject messageGO, float delay)
+    IEnumerator RemoveAfterDelay(GameObject messageGO, CanvasGroup canvasGroup, float delay)
     {
-        yield return new WaitForSeconds(delay);
+        float time = 0f;
 
-        if (messageQueue.Contains(messageGO))
+        while (time < delay && messageGO != null)
         {
-            messageQueue = new Queue<GameObject>(messageQueue); // 안전하게 복사
-            messageQueue.Dequeue(); // 하나 빼기
+            if (target != null)
+            {
+                Vector3 worldPos = target.position + offset;
+                Vector3 screenPos = mainCam.WorldToScreenPoint(worldPos);
+
+                // 위로 떠오르는 값
+                float floatOffset = Mathf.Lerp(0f, floatDistance, time / delay);
+
+                messageGO.transform.position = screenPos + Vector3.up * floatOffset;
+            }
+
+            // 점점 사라지기
+            canvasGroup.alpha = Mathf.Lerp(1f, 0f, time / delay);
+
+            time += Time.deltaTime;
+            yield return null;
         }
 
-        Destroy(messageGO);
+        if (messageGO != null)
+            Destroy(messageGO);
     }
 }

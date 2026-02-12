@@ -316,8 +316,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0, y: -100}
-  m_SizeDelta: {x: 1080, y: 200}
+  m_AnchoredPosition: {x: 0, y: -72}
+  m_SizeDelta: {x: 1080, y: 100}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &37487012
 MonoBehaviour:
@@ -355,8 +355,8 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 12800000, guid: e715fcabbb6163e48b780b3b92979f8e, type: 3}
-    m_FontSize: 150
-    m_FontStyle: 0
+    m_FontSize: 100
+    m_FontStyle: 1
     m_BestFit: 0
     m_MinSize: 0
     m_MaxSize: 150
@@ -9550,6 +9550,9 @@ MonoBehaviour:
   messagePrefab: {fileID: 4019115360777896248, guid: e2c9c2a6eff23e54d990251959e2d0fc, type: 3}
   messageParent: {fileID: 1824602494}
   maxMessages: 5
+  target: {fileID: 4436494039555101363}
+  offset: {x: 0, y: 1, z: 0}
+  floatDistance: 50
 --- !u!4 &1989029738
 Transform:
   m_ObjectHideFlags: 0
@@ -9600,7 +9603,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
   m_AnchoredPosition: {x: 0, y: -11}
-  m_SizeDelta: {x: 1000, y: 300}
+  m_SizeDelta: {x: 1000, y: 60}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &2002684502
 MonoBehaviour:
@@ -9624,7 +9627,7 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 12800000, guid: e715fcabbb6163e48b780b3b92979f8e, type: 3}
-    m_FontSize: 100
+    m_FontSize: 60
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 0
@@ -9654,27 +9657,27 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2967015192265671119, guid: 081ac9c988013904c9fac966b94ae266, type: 3}
       propertyPath: m_Pivot.x
-      value: 0.5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2967015192265671119, guid: 081ac9c988013904c9fac966b94ae266, type: 3}
       propertyPath: m_Pivot.y
-      value: 0.5
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2967015192265671119, guid: 081ac9c988013904c9fac966b94ae266, type: 3}
       propertyPath: m_AnchorMax.x
-      value: 0.5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2967015192265671119, guid: 081ac9c988013904c9fac966b94ae266, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0.5
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2967015192265671119, guid: 081ac9c988013904c9fac966b94ae266, type: 3}
       propertyPath: m_AnchorMin.x
-      value: 0.5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2967015192265671119, guid: 081ac9c988013904c9fac966b94ae266, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0.5
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2967015192265671119, guid: 081ac9c988013904c9fac966b94ae266, type: 3}
       propertyPath: m_SizeDelta.x
