@@ -7,7 +7,7 @@ public class ItemRechargeManager : MonoBehaviour
 
     [Header("충전 설정")]
     public int maxItemCount = 5;
-    public int rechargeTimeSeconds = 600; // 10분
+    public int rechargeTimeSeconds = 3600; //60분
 
     public int currentItemCount { get; private set; }
     public float timeRemaining { get; private set; }
@@ -17,6 +17,7 @@ public class ItemRechargeManager : MonoBehaviour
 
     private const string ITEM_KEY = "StoredItemCount";
     private const string TIME_KEY = "LastSaveTime";
+    private const string TIME_REMAIN_KEY = "StoredTimeRemaining";
 
     void Awake()
     {
@@ -82,6 +83,7 @@ public class ItemRechargeManager : MonoBehaviour
     {
         PlayerPrefs.SetInt(ITEM_KEY, currentItemCount);
         PlayerPrefs.SetString(TIME_KEY, DateTime.UtcNow.ToBinary().ToString());
+        PlayerPrefs.SetFloat(TIME_REMAIN_KEY, timeRemaining);
         PlayerPrefs.Save();
     }
 
@@ -89,24 +91,36 @@ public class ItemRechargeManager : MonoBehaviour
     {
         currentItemCount = PlayerPrefs.GetInt(ITEM_KEY, maxItemCount);
         string lastTimeStr = PlayerPrefs.GetString(TIME_KEY, string.Empty);
+        timeRemaining = PlayerPrefs.GetFloat(TIME_REMAIN_KEY, rechargeTimeSeconds);
 
         if (!string.IsNullOrEmpty(lastTimeStr) && currentItemCount < maxItemCount)
         {
             DateTime lastTime = DateTime.FromBinary(Convert.ToInt64(lastTimeStr));
             TimeSpan elapsed = DateTime.UtcNow - lastTime;
 
-            int secondsPassed = (int)elapsed.TotalSeconds;
-            int itemsToAdd = secondsPassed / rechargeTimeSeconds;
-            int remainder = secondsPassed % rechargeTimeSeconds;
+            float totalElapsedSeconds = (float)elapsed.TotalSeconds;
 
-            currentItemCount = Mathf.Min(currentItemCount + itemsToAdd, maxItemCount);
-            timeRemaining = (currentItemCount < maxItemCount) ? (rechargeTimeSeconds - remainder) : 0;
+            // 남은 시간에서 먼저 차감
+            timeRemaining -= totalElapsedSeconds;
+
+            while (timeRemaining <= 0 && currentItemCount < maxItemCount)
+            {
+                currentItemCount++;
+                timeRemaining += rechargeTimeSeconds;
+            }
+
+            if (currentItemCount >= maxItemCount)
+            {
+                currentItemCount = maxItemCount;
+                timeRemaining = 0;
+            }
         }
         else
         {
             timeRemaining = (currentItemCount < maxItemCount) ? rechargeTimeSeconds : 0;
         }
     }
+
 
     private void OnApplicationPause(bool pause) { if (pause) SaveData(); }
     private void OnApplicationQuit() { SaveData(); }

@@ -11367,19 +11367,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2848165828068314094, guid: 37aba78029ef8c7478bf4378aa093981, type: 3}
       propertyPath: m_Size.x
-      value: 0.94923264
+      value: 0.7686153
       objectReference: {fileID: 0}
     - target: {fileID: 2848165828068314094, guid: 37aba78029ef8c7478bf4378aa093981, type: 3}
       propertyPath: m_Size.y
-      value: 1.3603482
+      value: 1.0195465
       objectReference: {fileID: 0}
     - target: {fileID: 2848165828068314094, guid: 37aba78029ef8c7478bf4378aa093981, type: 3}
       propertyPath: m_Offset.x
-      value: -0.053697973
+      value: -0.0010178983
       objectReference: {fileID: 0}
     - target: {fileID: 2848165828068314094, guid: 37aba78029ef8c7478bf4378aa093981, type: 3}
       propertyPath: m_Offset.y
-      value: 0.67954254
+      value: 0.0011553764
       objectReference: {fileID: 0}
     - target: {fileID: 2848165828068314094, guid: 37aba78029ef8c7478bf4378aa093981, type: 3}
       propertyPath: m_SpriteTilingProperty.pivot.y
