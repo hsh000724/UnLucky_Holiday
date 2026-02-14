@@ -1,5 +1,8 @@
 🎮 UnLucky Holiday
 
+## 📥 다운로드
+- Google Play Store: [다운로드 링크](https://play.google.com/store/apps/details?id=com.dopas.unluckyholiday)
+
 UnLucky Holiday는
 모바일 환경에서 플레이 가능한 탑다운 2D 도트 스타일의 운빨형 생존 게임입니다.
 Vampire Survivors 장르(뱀서라이크)를 기반으로,
