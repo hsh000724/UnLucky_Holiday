@@ -7,7 +7,7 @@ public class AdManager : MonoBehaviour
     // [1] 광고 단위 ID 설정 (실제 AdMob ID로 교체 필수!)
     // 테스트 ID 사용 권장: Android 기준
     private const string InterstitialAdUnitId = "ca-app-pub-1273595572389184/2006811303"; //전면
-    private const string RewardedAdUnitId = "ca-app-pub-1273595572389184/7799684725"; //보상형 
+    private const string RewardedAdUnitId = "ca-app-pub-1273595572389184/3222861721"; //보상형 
     //private const string InterstitialAdUnitId = "ca-app-pub-3940256099942544/1033173712"; //테스트전면
     //private const string RewardedAdUnitId = "ca-app-pub-3940256099942544/5224354917"; //테스트보상형 
 
