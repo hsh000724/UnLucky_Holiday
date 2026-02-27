@@ -590,7 +590,7 @@ public class Player : MonoBehaviour
         Debug.Log("플레이어가 최종 사망했습니다. 게임 오버 절차 시작.");
 
         // 전면 광고 표시 요청 (게임 종료 시)
-        // AdManager.Instance.ShowInterstitialAd(); // AdManager 인스턴스에 따라 수정 필요
+        AdManager.Instance.ShowInterstitialAd(); // AdManager 인스턴스에 따라 수정 필요
 
         // 게임 오버 씬 로드
         StartCoroutine(DeathEffect());
