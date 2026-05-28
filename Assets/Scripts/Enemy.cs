@@ -293,6 +293,7 @@ public class Enemy : MonoBehaviour
     {
         deathPosition = transform.position;
 
+        EnemyManager.Instance.RemoveEnemy();
         SoundManager.instance.PlaySFX(SoundManager.instance.Enemy_DiedClip);
 
         if (Random.value < dropProbability) DropItemBox();
