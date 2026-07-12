@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 
 public class ModeManager : MonoBehaviour
 {
-    public enum GameMode { Classic, Infinity, Hardcore }
+    public enum GameMode { Classic, Infinity, Hardcore, Battle }
     public static ModeManager instance;
     public GameMode currentMode;
 
@@ -39,6 +39,9 @@ public class ModeManager : MonoBehaviour
                 break;
             case GameMode.Hardcore:
                 FadeManager.instance.FadeToScene("HardcoreMode");
+                break;
+            case GameMode.Battle:
+                FadeManager.instance.FadeToScene("BattleMode"); // ← 추가
                 break;
         }
     }

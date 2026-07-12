@@ -66,6 +66,8 @@ public class GameManager : MonoBehaviour
         if (isLive)
         {
             gameTime = Time.time - startTime;
+
+            BattleGameManager.Instance?.OnHpChanged(health, maxHealth);
         }
     }
 

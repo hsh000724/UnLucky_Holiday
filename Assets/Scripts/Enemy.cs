@@ -292,15 +292,21 @@ public class Enemy : MonoBehaviour
     void Dead()
     {
         deathPosition = transform.position;
-
         EnemyManager.Instance.RemoveEnemy();
         SoundManager.instance.PlaySFX(SoundManager.instance.Enemy_DiedClip);
 
-        if (Random.value < dropProbability) DropItemBox();
-        if (Random.value < dropProbability2) DropItemBox2();
-        if (Random.value < dropProbability3) DropItemBox3();
-        if (Random.value < dropProbability4) DropItemBox4();
-        if (Random.value < dropProbability5) DropItemBox5();
+        // ✅ 추가 - 방해몬스터 여부 구분해서 킬카운트 전달
+        bool isHinder = gameObject.CompareTag("HinderEnemy");
+        BattleGameManager.Instance?.OnEnemyKilled(isHinder);
+
+        if (!isHinder) // 방해몬스터는 아이템 드롭 없음
+        {
+            if (Random.value < dropProbability) DropItemBox();
+            if (Random.value < dropProbability2) DropItemBox2();
+            if (Random.value < dropProbability3) DropItemBox3();
+            if (Random.value < dropProbability4) DropItemBox4();
+            if (Random.value < dropProbability5) DropItemBox5();
+        }
 
         StartCoroutine(DisableAfterDelay(0.1f));
     }

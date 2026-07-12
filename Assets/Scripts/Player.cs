@@ -587,12 +587,18 @@ public class Player : MonoBehaviour
     // 최종 사망 처리 로직
     public void Player_Die()
     {
-        Debug.Log("플레이어가 최종 사망했습니다. 게임 오버 절차 시작.");
+        // 대전모드인지 확인
+        if (ModeManager.instance.currentMode == ModeManager.GameMode.Battle)
+        {
+            // 대전모드 → BattleGameManager에 위임
+            // 씬 전환은 BattleGameManager가 처리
+            BattleGameManager.Instance?.OnPlayerDead();
+            StartCoroutine(DeathEffect());
+            return; // ← GameOver 씬 이동 차단
+        }
 
-        // 전면 광고 표시 요청 (게임 종료 시)
-        AdManager.Instance.ShowInterstitialAd(); // AdManager 인스턴스에 따라 수정 필요
-
-        // 게임 오버 씬 로드
+        // 싱글모드 → 기존 로직 유지
+        AdManager.Instance.ShowInterstitialAd();
         StartCoroutine(DeathEffect());
         StartCoroutine(GameManager.instance.WaitAndLoadGameOverScene(5f));
     }

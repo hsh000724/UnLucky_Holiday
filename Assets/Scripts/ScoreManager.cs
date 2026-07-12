@@ -156,4 +156,107 @@ public class ScoreManager : MonoBehaviour
         if (value is long l) return (float)l;
         return 0f;
     }
+    /// <summary>
+    /// 대전모드 전적 저장
+    /// </summary>
+    public void SaveBattleRecord(
+        string userId,
+        string nickname,
+        bool isWin,
+        int killCount,
+        float gameTime,
+        bool isBossKill)  // 보스 처치로 승리했는지
+    {
+        if (string.IsNullOrEmpty(userId))
+        {
+            Debug.LogWarning("⚠️ 유저 ID가 없습니다. 전적 저장 실패.");
+            return;
+        }
+
+        DocumentReference docRef = db.Collection("Scores_Battle").Document(userId);
+
+        docRef.GetSnapshotAsync().ContinueWithOnMainThread(task =>
+        {
+            if (!task.IsCompleted)
+            {
+                Debug.LogError($"❌ Firestore 스냅샷 불러오기 실패: {task.Exception}");
+                return;
+            }
+
+            DocumentSnapshot snapshot = task.Result;
+
+            // 기존 전적 불러오기
+            int totalGames = 0;
+            int wins = 0;
+            int losses = 0;
+            int totalKills = 0;
+            int bestKills = 0;
+            float totalGameTime = 0f;
+            int bossKills = 0;
+
+            if (snapshot.Exists)
+            {
+                totalGames = GetInt(snapshot, "totalGames");
+                wins = GetInt(snapshot, "wins");
+                losses = GetInt(snapshot, "losses");
+                totalKills = GetInt(snapshot, "totalKills");
+                bestKills = GetInt(snapshot, "bestKills");
+                totalGameTime = GetFloat(snapshot, "totalGameTime");
+                bossKills = GetInt(snapshot, "bossKills");
+            }
+
+            // 새 전적 계산
+            totalGames++;
+            if (isWin) wins++;
+            else losses++;
+
+            totalKills += killCount;
+            bestKills = Mathf.Max(bestKills, killCount);
+            totalGameTime += gameTime;
+            if (isWin && isBossKill) bossKills++;
+
+            float winRate = totalGames > 0 ? (float)wins / totalGames : 0f;
+
+            // Firestore 저장
+            Dictionary<string, object> data = new Dictionary<string, object>
+        {
+            { "nickname",      nickname },
+            { "totalGames",    totalGames },
+            { "wins",          wins },
+            { "losses",        losses },
+            { "winRate",       Math.Round(winRate, 2) },
+            { "totalKills",    totalKills },
+            { "bestKills",     bestKills },
+            { "totalGameTime", totalGameTime },
+            { "bossKills",     bossKills },
+            { "updatedAt",     Timestamp.GetCurrentTimestamp() }
+        };
+
+            docRef.SetAsync(data, SetOptions.MergeAll)
+                .ContinueWithOnMainThread(setTask =>
+                {
+                    if (setTask.IsCompletedSuccessfully)
+                        Debug.Log($"✅ 대전 전적 저장 완료! 승:{wins} 패:{losses} 승률:{winRate:P0}");
+                    else
+                        Debug.LogError($"❌ 전적 저장 실패: {setTask.Exception}");
+                });
+        });
+    }
+
+    // ─────────────────────────────────────
+    // 헬퍼 (스냅샷에서 안전하게 값 추출)
+    // ─────────────────────────────────────
+    private int GetInt(DocumentSnapshot snapshot, string field)
+    {
+        if (!snapshot.ContainsField(field)) return 0;
+        object val = snapshot.GetValue<object>(field);
+        return ConvertToInt(val);
+    }
+
+    private float GetFloat(DocumentSnapshot snapshot, string field)
+    {
+        if (!snapshot.ContainsField(field)) return 0f;
+        object val = snapshot.GetValue<object>(field);
+        return ConvertToFloat(val);
+    }
 }

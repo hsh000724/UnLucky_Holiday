@@ -25,6 +25,8 @@ public class CollectionManager : MonoBehaviour
         {
             collectedItems.Add(type);
             UIManager.Instance?.UpdateCollectionUI(type);
+
+            BattleGameManager.Instance?.OnCollectionAcquired(type.ToString());
         }
 
         if (collectedItems.Count == 5)

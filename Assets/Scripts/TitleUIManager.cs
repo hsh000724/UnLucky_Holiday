@@ -7,6 +7,7 @@ public class TitleUIManager : MonoBehaviour
     public GameObject helpPanel;
     public GameObject rankingPanel;
     public GameObject rankingIcon;
+    public GameObject PVPPanel;
 
     // 모든 패널 비활성화
     void HideAllPanels()
@@ -16,6 +17,7 @@ public class TitleUIManager : MonoBehaviour
         helpPanel.SetActive(false);
         rankingPanel.SetActive(false);
         rankingIcon.SetActive(false);
+        PVPPanel.SetActive(false);
     }
 
     public void OnStartButtonClicked()
@@ -39,5 +41,11 @@ public class TitleUIManager : MonoBehaviour
     {
         HideAllPanels();
         rankingIcon.SetActive(true);
+    }
+
+    public void OnPVPPanelClicked()
+    {
+        HideAllPanels();
+        PVPPanel.SetActive(true);
     }
 }
