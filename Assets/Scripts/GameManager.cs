@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using Firebase.Auth; // 추가됨
+using Firebase.Auth;
 
 public class GameManager : MonoBehaviour
 {
@@ -34,15 +34,22 @@ public class GameManager : MonoBehaviour
         }
     }
 
+
     void Start()
     {
         GameStart();
         startTime = Time.time;
+
+        // ✅ 플레이 데이터 세션 시작
+        GameDataLogger.Instance?.StartSession();
+
         // 1분마다 스테이지 증가
         InvokeRepeating("IncreaseStage", 60f, 60f);
-        // 기존 UI 초기화 기능 복원
+
+        // 기존 UI 초기화
         UIManager.Instance?.ResetCollectionUI();
-        // 기존 총알 속성 초기화 기능 복원
+
+        // 폭발탄 상태 초기화
         TestBullet.Explosion_Bullet = false;
     }
 
@@ -52,14 +59,17 @@ public class GameManager : MonoBehaviour
         stageCount++;
     }
 
+
     public void GameStart()
     {
         health = maxHealth;
         isLive = true;
         isCleared = false;
-        // 기존 게임 속도 관리 기능 복원
+
+        // 기존 게임 속도 관리
         GameSpeedManager.Instance?.ApplyCurrentSpeed();
     }
+
 
     void Update()
     {
@@ -67,33 +77,73 @@ public class GameManager : MonoBehaviour
         {
             gameTime = Time.time - startTime;
 
-            BattleGameManager.Instance?.OnHpChanged(health, maxHealth);
+            BattleGameManager.Instance?.OnHpChanged(
+                health,
+                maxHealth
+            );
         }
     }
 
+
+    // =========================================================
+    // 게임 클리어
+    // =========================================================
+
     public void HandleGameClear()
     {
-        if (!isLive) return;
+        if (!isLive)
+            return;
 
         isLive = false;
         isCleared = true;
+
         CancelInvoke("IncreaseStage");
 
-        StartCoroutine(WaitAndLoadEndingScene(2.5f));
+
+        // ✅ 클리어 플레이 로그 저장
+        GameDataLogger.Instance?.EndSession(
+            gameTime,
+            stageCount,
+            true
+        );
+
+
+        StartCoroutine(
+            WaitAndLoadEndingScene(2.5f)
+        );
     }
 
-    public IEnumerator WaitAndLoadEndingScene(float delay)
+
+    // =========================================================
+    // 엔딩 씬 이동
+    // =========================================================
+
+    public IEnumerator WaitAndLoadEndingScene(
+        float delay)
     {
         yield return new WaitForSeconds(delay);
 
-        // [변경점] LoginUIManager 대신 AuthManager 및 FirebaseAuth 활용
-        string userId = FirebaseAuth.DefaultInstance.CurrentUser?.UserId;
-        string nickname = AuthManager.Instance.UserNickname;
 
-        ModeManager.GameMode currentMode = ModeManager.instance.currentMode;
+        // 로그인 정보
+        string userId =
+            FirebaseAuth.DefaultInstance
+                .CurrentUser?.UserId;
 
-        ScoreManager scoreManager = FindFirstObjectByType<ScoreManager>();
-        if (scoreManager != null && !string.IsNullOrEmpty(userId))
+        string nickname =
+            AuthManager.Instance.UserNickname;
+
+
+        ModeManager.GameMode currentMode =
+            ModeManager.instance.currentMode;
+
+
+        // 최고 기록 저장
+        ScoreManager scoreManager =
+            FindFirstObjectByType<ScoreManager>();
+
+
+        if (scoreManager != null &&
+            !string.IsNullOrEmpty(userId))
         {
             scoreManager.SaveBestScore(
                 userId,
@@ -105,34 +155,108 @@ public class GameManager : MonoBehaviour
             );
         }
 
-        FadeManager.instance.FadeToScene("EndingCredit");
+
+        // 엔딩 크레딧 이동
+        FadeManager.instance.FadeToScene(
+            "EndingCredit"
+        );
+
         Time.timeScale = 1f;
     }
 
+
+    // =========================================================
+    // 게임 일시정지
+    // =========================================================
 
     public void StopGameTime()
     {
         Time.timeScale = 0f;
     }
 
+
     public void ResumeGameTime()
     {
         Time.timeScale = 1f;
-        GameSpeedManager.Instance?.ApplyCurrentSpeed();
+
+        GameSpeedManager.Instance?
+            .ApplyCurrentSpeed();
     }
 
-    public IEnumerator WaitAndLoadGameOverScene(float delay)
+
+    // =========================================================
+    // 게임오버
+    // =========================================================
+
+    public IEnumerator WaitAndLoadGameOverScene(
+        float delay,
+        string reason)
     {
+        Debug.LogWarning(
+            "==============================\n" +
+            "[GAME OVER]\n" +
+            $"Reason : {reason}\n" +
+            $"HP : {health}\n" +
+            $"Enemy Count : " +
+            $"{(EnemyManager.Instance != null ? EnemyManager.Instance.currentEnemyCount : -1)}\n" +
+            $"GameTime : {gameTime}\n" +
+            $"Stage : {stageCount}\n" +
+            "=============================="
+        );
+
+
+        // 게임 진행 정지
+        isLive = false;
+
+        CancelInvoke("IncreaseStage");
+
+
+        // =====================================================
+        // ✅ 게임오버 원인 기록
+        // =====================================================
+
+        GameDataLogger.Instance?
+            .SetDeathCause(
+                reason
+            );
+
+
+        // =====================================================
+        // ✅ 현재 세션 Firestore 저장
+        // =====================================================
+
+        GameDataLogger.Instance?
+            .EndSession(
+                gameTime,
+                stageCount,
+                false
+            );
+
+
         yield return new WaitForSeconds(delay);
 
-        // [변경점] LoginUIManager 대신 AuthManager 및 FirebaseAuth 활용
-        string userId = FirebaseAuth.DefaultInstance.CurrentUser?.UserId;
-        string nickname = AuthManager.Instance.UserNickname;
 
-        ModeManager.GameMode currentMode = ModeManager.instance.currentMode;
+        string userId =
+            FirebaseAuth.DefaultInstance
+                .CurrentUser?.UserId;
 
-        ScoreManager scoreManager = FindFirstObjectByType<ScoreManager>();
-        if (scoreManager != null && !string.IsNullOrEmpty(userId))
+
+        string nickname =
+            AuthManager.Instance != null
+                ? AuthManager.Instance.UserNickname
+                : "Unknown";
+
+
+        ModeManager.GameMode currentMode =
+            ModeManager.instance.currentMode;
+
+
+        ScoreManager scoreManager =
+            FindFirstObjectByType<ScoreManager>();
+
+
+        if (scoreManager != null &&
+            !string.IsNullOrEmpty(userId))
         {
             scoreManager.SaveBestScore(
                 userId,
@@ -144,7 +268,12 @@ public class GameManager : MonoBehaviour
             );
         }
 
-        FadeManager.instance.FadeToScene("GameOver");
+
+        FadeManager.instance.FadeToScene(
+            "GameOver"
+        );
+
+
         Time.timeScale = 1f;
     }
 }

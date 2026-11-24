@@ -24,65 +24,100 @@ public class ItemBox : MonoBehaviour
     public float SpeedbuffAmount = 1.05f;
     public int CooldownAmount = 1;
 
-    // 공격력 증가를 위한 추가 버프량 (Infinity 모드 case 5용)
     public int Infinity_AtkBuffAmount = 2;
 
     void Start()
     {
         animator = GetComponent<Animator>();
 
-        // 🔹 미니맵 등록
         miniMap = FindObjectOfType<MiniMapController>();
+
         if (miniMap != null)
         {
-            bool isRare = rarity != BoxRarity.Normal;
-            miniMap.RegisterBox(transform, isRare);
+            bool isRare =
+                rarity != BoxRarity.Normal;
+
+            miniMap.RegisterBox(
+                transform,
+                isRare
+            );
         }
 
-        // 🔹 일정 시간 후 자동 제거
-        Destroy(gameObject, 60.0f);
+        Destroy(
+            gameObject,
+            60.0f
+        );
     }
 
-    void OnTriggerEnter2D(Collider2D collision)
+
+    void OnTriggerEnter2D(
+        Collider2D collision)
     {
-        if (!collision.CompareTag("Player")) return;
+        if (!collision.CompareTag("Player"))
+            return;
 
-        // 🔹 미니맵에서 제거
+
         if (miniMap != null)
         {
-            miniMap.UnregisterBox(transform);
+            miniMap.UnregisterBox(
+                transform
+            );
         }
 
-        animator.SetTrigger("OpenBox");
-        ApplyRandomEffect(collision.GetComponent<Player>());
 
-        Destroy(gameObject, 1.0f);
+        animator.SetTrigger(
+            "OpenBox"
+        );
+
+
+        ApplyRandomEffect(
+            collision.GetComponent<Player>()
+        );
+
+
+        Destroy(
+            gameObject,
+            1.0f
+        );
     }
+
 
     void OnDestroy()
     {
-        // 🔹 예외 상황 대비 (중복 호출 방지)
         if (miniMap != null)
         {
-            miniMap.UnregisterBox(transform);
+            miniMap.UnregisterBox(
+                transform
+            );
         }
     }
 
-    void ApplyRandomEffect(Player player)
-    {
-        List<int> availableEffects = new List<int>();
 
-        // 0~4 기본 효과
+    void ApplyRandomEffect(
+        Player player)
+    {
+        List<int> availableEffects =
+            new List<int>();
+
+
         for (int i = 0; i <= 4; i++)
+        {
             availableEffects.Add(i);
+        }
+
 
         bool isInfinityMode =
             ModeManager.instance != null &&
-            ModeManager.instance.currentMode == ModeManager.GameMode.Infinity;
+            ModeManager.instance.currentMode ==
+            ModeManager.GameMode.Infinity;
+
 
         if (!isInfinityMode)
         {
-            if (!CollectionManager.Instance.IsCollected(CollectibleType.RedOrb))
+            if (!CollectionManager.Instance
+                .IsCollected(
+                    CollectibleType.RedOrb
+                ))
             {
                 availableEffects.Add(5);
             }
@@ -92,59 +127,176 @@ public class ItemBox : MonoBehaviour
             availableEffects.Add(5);
         }
 
+
         if (availableEffects.Count == 0)
         {
-            Debug.Log("사용 가능한 아이템 효과가 없습니다.");
+            Debug.Log(
+                "사용 가능한 아이템 효과가 없습니다."
+            );
+
             return;
         }
 
-        int randomEffect = availableEffects[Random.Range(0, availableEffects.Count)];
+
+        int randomEffect =
+            availableEffects[
+                Random.Range(
+                    0,
+                    availableEffects.Count
+                )
+            ];
+
 
         switch (randomEffect)
         {
-            case 0: // 공격력 증가
-                if (player != null && ItemOption.instance != null)
-                    ItemOption.instance.AtkBuff(player, AtkbuffAmount);
+            // 공격력 증가
+            case 0:
+                if (player != null &&
+                    ItemOption.instance != null)
+                {
+                    ItemOption.instance.AtkBuff(
+                        player,
+                        AtkbuffAmount
+                    );
+
+                    GameDataLogger.Instance?
+                        .LogItemAcquire(
+                            "Box1_AttackUp"
+                        );
+                }
                 break;
 
-            case 1: // 체력 회복
+
+            // 체력 회복
+            case 1:
                 if (ItemOption.instance != null)
-                    ItemOption.instance.Heal(Small_Heal, Small_Add_Health);
+                {
+                    ItemOption.instance.Heal(
+                        Small_Heal,
+                        Small_Add_Health
+                    );
+
+                    GameDataLogger.Instance?
+                        .LogItemAcquire(
+                            "Box1_Heal"
+                        );
+                }
                 break;
 
-            case 2: // 이동 속도 증가
-                if (player != null && ItemOption.instance != null)
-                    ItemOption.instance.PlayerSpeedUp(player, SpeedbuffAmount);
+
+            // 이동속도
+            case 2:
+                if (player != null &&
+                    ItemOption.instance != null)
+                {
+                    ItemOption.instance.PlayerSpeedUp(
+                        player,
+                        SpeedbuffAmount
+                    );
+
+                    GameDataLogger.Instance?
+                        .LogItemAcquire(
+                            "Box1_SpeedUp"
+                        );
+                }
                 break;
 
-            case 3: // 공격 속도 증가
-                if (player != null && ItemOption.instance != null)
-                    ItemOption.instance.AtkSpeedUp(player, CooldownAmount);
+
+            // 공격속도
+            case 3:
+                if (player != null &&
+                    ItemOption.instance != null)
+                {
+                    ItemOption.instance.AtkSpeedUp(
+                        player,
+                        CooldownAmount
+                    );
+
+                    GameDataLogger.Instance?
+                        .LogItemAcquire(
+                            "Box1_AttackSpeedUp"
+                        );
+                }
                 break;
 
-            case 4: // 방패 획득
-                if (player != null && ItemOption.instance != null)
-                    ItemOption.instance.GetShield(player);
+
+            // 쉴드 획득
+            case 4:
+                if (player != null &&
+                    ItemOption.instance != null)
+                {
+                    ItemOption.instance.GetShield(
+                        player
+                    );
+
+                    GameDataLogger.Instance?
+                        .LogItemAcquire(
+                            "Box1_Shield"
+                        );
+                }
                 break;
+
 
             case 5:
                 if (isInfinityMode)
                 {
-                    if (player != null && ItemOption.instance != null)
+                    if (player != null &&
+                        ItemOption.instance != null)
                     {
-                        ItemOption.instance.AtkBuff(player, Infinity_AtkBuffAmount);
-                        GameObject.Find("MessageManager")
-                            .GetComponent<MessageManager>()
-                            .ShowMessage("추가 공격력 증가", 3f, new Color(1f, 0.2f, 0.2f));
+                        ItemOption.instance.AtkBuff(
+                            player,
+                            Infinity_AtkBuffAmount
+                        );
+
+                        GameDataLogger.Instance?
+                            .LogItemAcquire(
+                                "Box1_AttackUp_InfinityBonus"
+                            );
+
+
+                        GameObject.Find(
+                            "MessageManager"
+                        )
+                        .GetComponent<MessageManager>()
+                        .ShowMessage(
+                            "추가 공격력 증가",
+                            3f,
+                            new Color(
+                                1f,
+                                0.2f,
+                                0.2f
+                            )
+                        );
                     }
                 }
                 else
                 {
-                    CollectionManager.Instance.Collect(CollectibleType.RedOrb);
-                    GameObject.Find("MessageManager")
-                        .GetComponent<MessageManager>()
-                        .ShowMessage("오브1 획득", 3f, new Color(1f, 0.2f, 0.2f));
+                    CollectionManager.Instance.Collect(
+                        CollectibleType.RedOrb
+                    );
+
+                    // ✅ 상자에서 RedOrb를 획득했다는 기록
+                    GameDataLogger.Instance?
+                        .LogItemAcquire(
+                            "Box1_RedOrb"
+                        );
+
+
+                    GameObject.Find(
+                        "MessageManager"
+                    )
+                    .GetComponent<MessageManager>()
+                    .ShowMessage(
+                        "오브1 획득",
+                        3f,
+                        new Color(
+                            1f,
+                            0.2f,
+                            0.2f
+                        )
+                    );
                 }
+
                 break;
         }
     }

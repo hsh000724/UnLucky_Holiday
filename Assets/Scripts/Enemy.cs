@@ -15,9 +15,11 @@ public class Enemy : MonoBehaviour
     public float speed; // 몬스터의 속도
     public float health; // 몬스터의 현재체력
     public float maxHealth; // 몬스터의 최대체력
-    public float attackDamage = 10f;  // 몬스터의 공격력 
+    public float attackDamage = 10f; // 몬스터의 공격력
+
     public RuntimeAnimatorController[] animCon;
     public Rigidbody2D target;
+
     Animator anim;
     private Vector3 deathPosition;
 
@@ -45,11 +47,16 @@ public class Enemy : MonoBehaviour
 
         if (healthBarPrefab != null)
         {
-            healthBarInstance = Instantiate(healthBarPrefab, GameObject.Find("World Canvas").transform);
+            healthBarInstance = Instantiate(
+                healthBarPrefab,
+                GameObject.Find("World Canvas").transform
+            );
+
             HUD hud = healthBarInstance.GetComponent<HUD>();
             hud.enemyTarget = this;
         }
     }
+
 
     void Awake()
     {
@@ -58,85 +65,131 @@ public class Enemy : MonoBehaviour
         sprite = GetComponent<SpriteRenderer>();
     }
 
+
     void FixedUpdate()
     {
         if (!isLive)
             return;
 
         Vector2 dirVec = target.position - rigid.position;
-        Vector2 nextVec = dirVec.normalized * speed * Time.fixedDeltaTime;
-        rigid.MovePosition(rigid.position + nextVec);
+
+        Vector2 nextVec =
+            dirVec.normalized *
+            speed *
+            Time.fixedDeltaTime;
+
+        rigid.MovePosition(
+            rigid.position + nextVec
+        );
+
         rigid.linearVelocity = Vector2.zero;
     }
+
 
     void LateUpdate()
     {
         if (!isLive)
             return;
 
-        sprite.flipX = target.position.x < rigid.position.x;
+        sprite.flipX =
+            target.position.x < rigid.position.x;
     }
+
 
     void OnEnable()
-{
-    target = GameManager.instance.player.GetComponent<Rigidbody2D>();
-    isLive = true;
-    health = maxHealth;
-
-    if (healthBarInstance == null)
     {
-        GameObject canvas = GameObject.Find("World Canvas");
-        healthBarInstance = Instantiate(healthBarPrefab, canvas.transform);
+        target =
+            GameManager.instance.player
+                .GetComponent<Rigidbody2D>();
 
-        // ✅ HUD를 통해 healthSlider 연결
-        HUD hud = healthBarInstance.GetComponent<HUD>();
-        hud.enemyTarget = this;
-        healthSlider = healthBarInstance.GetComponent<Slider>();
-    }
-    else
-    {
-        // ✅ healthSlider를 다시 연결
-        healthSlider = healthBarInstance.GetComponent<Slider>();
-    }
+        isLive = true;
+        health = maxHealth;
 
-    UpdateHealthBar();  // ← 이 때 healthSlider가 null이 아니도록 보장
-}
+        if (healthBarInstance == null)
+        {
+            GameObject canvas =
+                GameObject.Find("World Canvas");
+
+            healthBarInstance =
+                Instantiate(
+                    healthBarPrefab,
+                    canvas.transform
+                );
+
+            // HUD를 통해 healthSlider 연결
+            HUD hud =
+                healthBarInstance.GetComponent<HUD>();
+
+            hud.enemyTarget = this;
+
+            healthSlider =
+                healthBarInstance.GetComponent<Slider>();
+        }
+        else
+        {
+            healthSlider =
+                healthBarInstance.GetComponent<Slider>();
+        }
+
+        UpdateHealthBar();
+    }
 
 
     void Update()
     {
         if (healthBarInstance != null)
         {
-            // 체력바 위치를 Enemy 머리 위로 맞춤
-            Vector3 worldPos = transform.position + new Vector3(0, -0.8f, 0);
-            healthBarInstance.transform.position = worldPos;
+            Vector3 worldPos =
+                transform.position +
+                new Vector3(0, -0.8f, 0);
+
+            healthBarInstance.transform.position =
+                worldPos;
+
             UpdateHealthBar();
         }
     }
 
+
     IEnumerator EvolveVisuals()
     {
-        float interval = 60f; // 1분마다
+        float interval = 60f;
+
         float r = sprite.color.r;
         float g = sprite.color.g;
         float b = sprite.color.b;
-        Vector3 originalScale = transform.localScale;
 
-        // 단계 구분
+        Vector3 originalScale =
+            transform.localScale;
+
         bool turningRed = true;
         bool turningBlack = false;
         bool scalingUp = false;
 
         while (isLive)
         {
-            yield return new WaitForSeconds(interval);
+            yield return new WaitForSeconds(
+                interval
+            );
 
             if (turningRed)
             {
-                // G와 B 감소 (붉어짐)
-                g = Mathf.Max(0, g - 0.2f);
-                b = Mathf.Max(0, b - 0.2f);
-                sprite.color = new Color(1f, g, b);
+                g = Mathf.Max(
+                    0,
+                    g - 0.2f
+                );
+
+                b = Mathf.Max(
+                    0,
+                    b - 0.2f
+                );
+
+                sprite.color =
+                    new Color(
+                        1f,
+                        g,
+                        b
+                    );
 
                 if (g <= 0 && b <= 0)
                 {
@@ -146,9 +199,17 @@ public class Enemy : MonoBehaviour
             }
             else if (turningBlack)
             {
-                // R 감소 (검게 변함)
-                r = Mathf.Max(0, r - 0.2f);
-                sprite.color = new Color(r, 0f, 0f);
+                r = Mathf.Max(
+                    0,
+                    r - 0.2f
+                );
+
+                sprite.color =
+                    new Color(
+                        r,
+                        0f,
+                        0f
+                    );
 
                 if (r <= 0)
                 {
@@ -158,8 +219,12 @@ public class Enemy : MonoBehaviour
             }
             else if (scalingUp)
             {
-                // 크기 증가
-                transform.localScale += new Vector3(0.2f, 0.2f, 0f);
+                transform.localScale +=
+                    new Vector3(
+                        0.2f,
+                        0.2f,
+                        0f
+                    );
             }
         }
     }
@@ -169,157 +234,552 @@ public class Enemy : MonoBehaviour
     {
         if (healthSlider != null)
         {
-            healthSlider.value = health / maxHealth;
+            healthSlider.value =
+                health / maxHealth;
         }
     }
+
 
     void OnDisable()
     {
         if (healthBarInstance != null)
         {
-            Destroy(healthBarInstance);
+            Destroy(
+                healthBarInstance
+            );
         }
     }
+
 
     public void Init(SpawnData data)
-{
-    anim.runtimeAnimatorController = animCon[data.spriteType];
-    speed = data.speed;
-    maxHealth = data.health;
-    health = data.health;  // ✅ 추가적으로 체력값 직접 반영
-    UpdateHealthBar();     // ✅ 체력바 갱신
-}
-
-    void OnTriggerEnter2D(Collider2D collision)
-{
-    Player player = GameObject.FindWithTag("Player").GetComponent<Player>();
-
-    // ✅ SpecialWeapons 무기 충돌 처리
-    if (collision.CompareTag("SpecialWeapons"))
     {
-        float damage = collision.GetComponent<Special_Weapon>().damage;
-        SoundManager.instance.PlaySFX(SoundManager.instance.Enemy_HurtClip);
-        health -= (int)damage;
+        anim.runtimeAnimatorController =
+            animCon[data.spriteType];
+
+        speed = data.speed;
+        maxHealth = data.health;
+        health = data.health;
+
         UpdateHealthBar();
-        DrawDamage((int)damage, false);
-
-        if (health <= 0)
-        {
-            Dead();
-        }
-        return;
     }
 
-    // ✅ Bullet (TestBullet) 충돌 처리
-    TestBullet bullet = collision.GetComponent<TestBullet>();
-    if (bullet != null)
+
+    // =========================================================
+    // 공격 충돌
+    // =========================================================
+
+    void OnTriggerEnter2D(
+        Collider2D collision)
     {
-        
-        SoundManager.instance.PlaySFX(SoundManager.instance.Enemy_HurtClip);
-        health -= bullet.damage;
-        DrawDamage(bullet.damage, bullet.isCritical);
+        // 이미 죽은 적에게 추가 로그가 들어가는 것 방지
+        if (!isLive)
+            return;
 
-        // ✅ 폭발 탄환이면 폭발 실행
-        if (TestBullet.Explosion_Bullet)
+
+        // =====================================================
+        // 특수무기
+        // =====================================================
+
+        if (collision.CompareTag(
+            "SpecialWeapons"))
         {
-            bullet.Explosion(transform.position);
-        }
+            Special_Weapon specialWeapon =
+                collision.GetComponent
+                    <Special_Weapon>();
+
+            if (specialWeapon != null)
+            {
+                // 기존 코드가 int로 피해를 적용하고 있으므로
+                // 실제 적용 피해도 int 기준
+                int damage =
+                    (int)specialWeapon.damage;
+
+                // 오버킬 피해를 로그에 포함하지 않기 위해
+                // 현재 남은 HP까지만 실제 피해로 기록
+                float actualDamage =
+                    Mathf.Min(
+                        damage,
+                        health
+                    );
+
+                SoundManager.instance.PlaySFX(
+                    SoundManager.instance
+                        .Enemy_HurtClip
+                );
+
+                health -= damage;
+
+                // ✅ 특수무기 피해 로그
+                GameDataLogger.Instance?
+                    .LogSpecialWeaponDamage(
+                        actualDamage
+                    );
+
+                UpdateHealthBar();
+
+                DrawDamage(
+                    damage,
+                    false
+                );
 
 
-        if (health <= 0)
-            Dead();
+                if (health <= 0)
+                {
+                    Dead();
+                }
+            }
 
-        Destroy(collision.gameObject);
-    }
-
-}
-
-
-    public void TakeDamage(int damage, Vector3 hitPosition)
-    {
-        SoundManager.instance.PlaySFX(SoundManager.instance.Enemy_HurtClip);
-        health -= damage;
-        UpdateHealthBar();
-        DrawDamage(damage, false);
-
-        if (health <= 0)
-        {
-            Dead();
-        }
-    }
-
-    public void TakeExplosionDamage(int damage)
-    {
-        SoundManager.instance.PlaySFX(SoundManager.instance.Enemy_HurtClip);
-        health -= damage;
-        UpdateHealthBar();
-        Debug.Log("폭발데미지 :" + damage);
-        DrawDamage(damage, false);
-
-        if (health <= 0)
-        {
-            Dead();
-        }
-    }
-
-    private void DrawDamage(int damage, bool isCriticalHit)
-    {
-        Vector3 worldPosition = transform.position + new Vector3(0, 1.5f, 0); // 머리 위
-        GameObject canvas = GameObject.Find("World Canvas"); // 월드 스페이스 캔버스
-
-        if (canvas == null)
-        {
-            Debug.LogWarning("Canvas를 찾을 수 없습니다.");
             return;
         }
 
-        GameObject prefab = isCriticalHit ? Critical_damageTextPrefab : damageTextPrefab;
 
-        GameObject dmgText = Instantiate(prefab, canvas.transform);
-        dmgText.transform.position = worldPosition;
+        // =====================================================
+        // 기본 탄환
+        // =====================================================
 
-        var textComponent = dmgText.GetComponent<DamageText>();
+        TestBullet bullet =
+            collision.GetComponent<TestBullet>();
+
+        if (bullet != null)
+        {
+            // 남은 체력보다 큰 공격이 들어오더라도
+            // 실제 HP에서 감소한 양만 데이터로 기록
+            float actualDamage =
+                Mathf.Min(
+                    bullet.damage,
+                    health
+                );
+
+
+            SoundManager.instance.PlaySFX(
+                SoundManager.instance
+                    .Enemy_HurtClip
+            );
+
+
+            health -= bullet.damage;
+
+
+            // ✅ 기본탄 피해 기록
+            // critical 여부도 같이 전달
+            GameDataLogger.Instance?
+                .LogBulletDamage(
+                    actualDamage,
+                    bullet.isCritical
+                );
+
+
+            UpdateHealthBar();
+
+
+            DrawDamage(
+                bullet.damage,
+                bullet.isCritical
+            );
+
+
+            // 폭발탄이면 폭발 생성
+            if (TestBullet.Explosion_Bullet)
+            {
+                bullet.Explosion(
+                    transform.position
+                );
+            }
+
+
+            if (health <= 0)
+            {
+                Dead();
+            }
+
+
+            Destroy(
+                collision.gameObject
+            );
+        }
+    }
+
+
+    // =========================================================
+    // 외부 공격 데미지
+    // =========================================================
+
+    public void TakeDamage(
+        int damage,
+        Vector3 hitPosition)
+    {
+        if (!isLive)
+            return;
+
+
+        float actualDamage =
+            Mathf.Min(
+                damage,
+                health
+            );
+
+
+        SoundManager.instance.PlaySFX(
+            SoundManager.instance
+                .Enemy_HurtClip
+        );
+
+
+        health -= damage;
+
+
+        /*
+         * 현재 제공된 스크립트만으로는
+         * 이 TakeDamage()를 호출하는 공격원이
+         * 무엇인지 확인되지 않았기 때문에
+         * 피해 종류를 임의로 기록하지 않음.
+         *
+         * 만약 자기장 공격이 이 함수를 호출하는 것이
+         * 확인되면 아래 코드를 활성화하면 됨.
+         *
+         * GameDataLogger.Instance?
+         *     .LogMagneticFieldDamage(actualDamage);
+         */
+
+
+        UpdateHealthBar();
+
+        DrawDamage(
+            damage,
+            false
+        );
+
+
+        if (health <= 0)
+        {
+            Dead();
+        }
+    }
+
+
+    // =========================================================
+    // 폭발 데미지
+    // =========================================================
+
+    public void TakeExplosionDamage(
+        int damage)
+    {
+        if (!isLive)
+            return;
+
+
+        float actualDamage =
+            Mathf.Min(
+                damage,
+                health
+            );
+
+
+        SoundManager.instance.PlaySFX(
+            SoundManager.instance
+                .Enemy_HurtClip
+        );
+
+
+        health -= damage;
+
+
+        // ✅ 폭발 피해 로그
+        GameDataLogger.Instance?
+            .LogExplosionDamage(
+                actualDamage
+            );
+
+
+        UpdateHealthBar();
+
+
+        Debug.Log(
+            "폭발데미지 :" +
+            damage
+        );
+
+
+        DrawDamage(
+            damage,
+            false
+        );
+
+
+        if (health <= 0)
+        {
+            Dead();
+        }
+    }
+
+
+    // =========================================================
+    // 데미지 텍스트
+    // =========================================================
+
+    private void DrawDamage(
+        int damage,
+        bool isCriticalHit)
+    {
+        Vector3 worldPosition =
+            transform.position +
+            new Vector3(
+                0,
+                1.5f,
+                0
+            );
+
+
+        GameObject canvas =
+            GameObject.Find(
+                "World Canvas"
+            );
+
+
+        if (canvas == null)
+        {
+            Debug.LogWarning(
+                "Canvas를 찾을 수 없습니다."
+            );
+
+            return;
+        }
+
+
+        GameObject prefab =
+            isCriticalHit
+                ? Critical_damageTextPrefab
+                : damageTextPrefab;
+
+
+        GameObject dmgText =
+            Instantiate(
+                prefab,
+                canvas.transform
+            );
+
+
+        dmgText.transform.position =
+            worldPosition;
+
+
+        DamageText textComponent =
+            dmgText.GetComponent
+                <DamageText>();
+
+
         if (textComponent != null)
         {
-            textComponent.SetDamage(damage);
+            textComponent.SetDamage(
+                damage
+            );
         }
         else
         {
-            Debug.LogWarning("DamageText 컴포넌트를 찾을 수 없습니다.");
+            Debug.LogWarning(
+                "DamageText 컴포넌트를 " +
+                "찾을 수 없습니다."
+            );
         }
     }
+
+
+    // =========================================================
+    // 적 사망
+    // =========================================================
 
     void Dead()
     {
-        deathPosition = transform.position;
-        EnemyManager.Instance.RemoveEnemy();
-        SoundManager.instance.PlaySFX(SoundManager.instance.Enemy_DiedClip);
+        // ✅ 중복 사망 방지
+        //
+        // 폭발이나 여러 공격이 거의 동시에 들어오면
+        // Dead()가 여러 번 호출될 가능성이 있으므로
+        // 킬 / 드롭 데이터 중복 방지
+        if (!isLive)
+            return;
 
-        // ✅ 추가 - 방해몬스터 여부 구분해서 킬카운트 전달
-        bool isHinder = gameObject.CompareTag("HinderEnemy");
-        BattleGameManager.Instance?.OnEnemyKilled(isHinder);
+        isLive = false;
 
-        if (!isHinder) // 방해몬스터는 아이템 드롭 없음
+
+        deathPosition =
+            transform.position;
+
+
+        EnemyManager.Instance
+            .RemoveEnemy();
+
+
+        SoundManager.instance.PlaySFX(
+            SoundManager.instance
+                .Enemy_DiedClip
+        );
+
+
+        // ✅ 적 처치 로그
+        GameDataLogger.Instance?
+            .LogEnemyKill();
+
+
+        // 방해몬스터 여부
+        bool isHinder =
+            gameObject.CompareTag(
+                "HinderEnemy"
+            );
+
+
+        BattleGameManager.Instance?
+            .OnEnemyKilled(
+                isHinder
+            );
+
+
+        // 방해몬스터는 아이템 드롭 없음
+        if (!isHinder)
         {
-            if (Random.value < dropProbability) DropItemBox();
-            if (Random.value < dropProbability2) DropItemBox2();
-            if (Random.value < dropProbability3) DropItemBox3();
-            if (Random.value < dropProbability4) DropItemBox4();
-            if (Random.value < dropProbability5) DropItemBox5();
+            if (Random.value <
+                dropProbability)
+            {
+                DropItemBox();
+            }
+
+
+            if (Random.value <
+                dropProbability2)
+            {
+                DropItemBox2();
+            }
+
+
+            if (Random.value <
+                dropProbability3)
+            {
+                DropItemBox3();
+            }
+
+
+            if (Random.value <
+                dropProbability4)
+            {
+                DropItemBox4();
+            }
+
+
+            if (Random.value <
+                dropProbability5)
+            {
+                DropItemBox5();
+            }
         }
 
-        StartCoroutine(DisableAfterDelay(0.1f));
+
+        StartCoroutine(
+            DisableAfterDelay(
+                0.1f
+            )
+        );
     }
 
-    void DropItemBox() => Instantiate(itemBoxPrefab, deathPosition, Quaternion.identity);
-    void DropItemBox2() => Instantiate(itemBoxPrefab2, deathPosition, Quaternion.identity);
-    void DropItemBox3() => Instantiate(itemBoxPrefab3, deathPosition, Quaternion.identity);
-    void DropItemBox4() => Instantiate(itemBoxPrefab4, deathPosition, Quaternion.identity);
-    void DropItemBox5() => Instantiate(itemBoxPrefab5, deathPosition, Quaternion.identity);
 
-    IEnumerator DisableAfterDelay(float delay)
+    // =========================================================
+    // 아이템 드롭
+    // =========================================================
+
+    void DropItemBox()
     {
-        yield return new WaitForSeconds(delay);
-        gameObject.SetActive(false);
+        Instantiate(
+            itemBoxPrefab,
+            deathPosition,
+            Quaternion.identity
+        );
+
+
+        // ✅ 1번 상자 실제 드롭
+        GameDataLogger.Instance?
+            .LogBoxDrop(
+                "ItemBox1"
+            );
+    }
+
+
+    void DropItemBox2()
+    {
+        Instantiate(
+            itemBoxPrefab2,
+            deathPosition,
+            Quaternion.identity
+        );
+
+
+        // ✅ 2번 상자 실제 드롭
+        GameDataLogger.Instance?
+            .LogBoxDrop(
+                "ItemBox2"
+            );
+    }
+
+
+    void DropItemBox3()
+    {
+        Instantiate(
+            itemBoxPrefab3,
+            deathPosition,
+            Quaternion.identity
+        );
+
+
+        // ✅ 3번 상자 실제 드롭
+        GameDataLogger.Instance?
+            .LogBoxDrop(
+                "ItemBox3"
+            );
+    }
+
+
+    void DropItemBox4()
+    {
+        Instantiate(
+            itemBoxPrefab4,
+            deathPosition,
+            Quaternion.identity
+        );
+
+
+        // ✅ 4번 상자 실제 드롭
+        GameDataLogger.Instance?
+            .LogBoxDrop(
+                "ItemBox4"
+            );
+    }
+
+
+    void DropItemBox5()
+    {
+        Instantiate(
+            itemBoxPrefab5,
+            deathPosition,
+            Quaternion.identity
+        );
+
+
+        // ✅ 5번 상자 실제 드롭
+        GameDataLogger.Instance?
+            .LogBoxDrop(
+                "ItemBox5"
+            );
+    }
+
+
+    IEnumerator DisableAfterDelay(
+        float delay)
+    {
+        yield return
+            new WaitForSeconds(
+                delay
+            );
+
+
+        gameObject.SetActive(
+            false
+        );
     }
 }

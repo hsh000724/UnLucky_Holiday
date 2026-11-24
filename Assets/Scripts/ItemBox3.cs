@@ -14,102 +14,271 @@ public class ItemBox3 : MonoBehaviour
     public float SpeedbuffAmount = 1.3f;
     public float Range_ScopeSize = 1.1f;
 
+
     void Start()
     {
         animator = GetComponent<Animator>();
 
-        // 🔹 미니맵 등록 (일반 상자)
-        miniMap = FindObjectOfType<MiniMapController>();
+        miniMap =
+            FindObjectOfType<MiniMapController>();
+
+
         if (miniMap != null)
         {
-            miniMap.RegisterBox(transform, false); // false = 일반
+            miniMap.RegisterBox(
+                transform,
+                false
+            );
         }
 
-        Destroy(gameObject, 60.0f);
+
+        Destroy(
+            gameObject,
+            60.0f
+        );
     }
 
-    void OnTriggerEnter2D(Collider2D collision)
+
+    void OnTriggerEnter2D(
+        Collider2D collision)
     {
-        if (!collision.CompareTag("Player")) return;
+        if (!collision.CompareTag("Player"))
+            return;
 
-        // 🔹 미니맵 제거
+
         if (miniMap != null)
         {
-            miniMap.UnregisterBox(transform);
+            miniMap.UnregisterBox(
+                transform
+            );
         }
 
-        animator.SetTrigger("OpenBox");
-        ApplyRandomEffect(collision.GetComponent<Player>());
 
-        Destroy(gameObject, 1.0f);
+        animator.SetTrigger(
+            "OpenBox"
+        );
+
+
+        ApplyRandomEffect(
+            collision.GetComponent<Player>()
+        );
+
+
+        Destroy(
+            gameObject,
+            1.0f
+        );
     }
+
 
     void OnDestroy()
     {
         if (miniMap != null)
         {
-            miniMap.UnregisterBox(transform);
+            miniMap.UnregisterBox(
+                transform
+            );
         }
     }
 
-    void ApplyRandomEffect(Player player)
+
+    void ApplyRandomEffect(
+        Player player)
     {
-        List<int> availableEffects = new List<int>();
+        List<int> availableEffects =
+            new List<int>();
+
 
         for (int i = 0; i <= 5; i++)
+        {
             availableEffects.Add(i);
+        }
+
 
         bool isInfinityMode =
             ModeManager.instance != null &&
-            ModeManager.instance.currentMode == ModeManager.GameMode.Infinity;
+            ModeManager.instance.currentMode ==
+            ModeManager.GameMode.Infinity;
+
 
         if (!isInfinityMode)
         {
-            if (!CollectionManager.Instance.IsCollected(CollectibleType.BlueOrb))
+            if (!CollectionManager.Instance
+                .IsCollected(
+                    CollectibleType.BlueOrb
+                ))
+            {
                 availableEffects.Add(6);
+            }
         }
         else
         {
             availableEffects.Add(6);
         }
 
-        int randomEffect = availableEffects[Random.Range(0, availableEffects.Count)];
+
+        int randomEffect =
+            availableEffects[
+                Random.Range(
+                    0,
+                    availableEffects.Count
+                )
+            ];
+
 
         switch (randomEffect)
         {
             case 0:
-                ItemOption.instance?.AtkBuff(player, AtkbuffAmount);
+                if (ItemOption.instance != null)
+                {
+                    ItemOption.instance.AtkBuff(
+                        player,
+                        AtkbuffAmount
+                    );
+
+                    GameDataLogger.Instance?
+                        .LogItemAcquire(
+                            "Box3_AttackUp"
+                        );
+                }
                 break;
+
+
             case 1:
-                ItemOption.instance?.Heal(Big_Heal, Big_Add_Health);
+                if (ItemOption.instance != null)
+                {
+                    ItemOption.instance.Heal(
+                        Big_Heal,
+                        Big_Add_Health
+                    );
+
+                    GameDataLogger.Instance?
+                        .LogItemAcquire(
+                            "Box3_Heal"
+                        );
+                }
                 break;
+
+
             case 2:
-                ItemOption.instance?.PlayerSpeedUp(player, SpeedbuffAmount);
+                if (ItemOption.instance != null)
+                {
+                    ItemOption.instance.PlayerSpeedUp(
+                        player,
+                        SpeedbuffAmount
+                    );
+
+                    GameDataLogger.Instance?
+                        .LogItemAcquire(
+                            "Box3_SpeedUp"
+                        );
+                }
                 break;
+
+
             case 3:
-                ItemOption.instance?.IncreaseBullet(player);
+                if (ItemOption.instance != null)
+                {
+                    ItemOption.instance.IncreaseBullet(
+                        player
+                    );
+
+                    GameDataLogger.Instance?
+                        .LogItemAcquire(
+                            "Box3_BulletCountUp"
+                        );
+                }
                 break;
+
+
             case 4:
-                ItemOption.instance?.AddBulletFirePoint(player);
+                if (ItemOption.instance != null)
+                {
+                    ItemOption.instance.AddBulletFirePoint(
+                        player
+                    );
+
+                    GameDataLogger.Instance?
+                        .LogItemAcquire(
+                            "Box3_FirePointUp"
+                        );
+                }
                 break;
+
+
             case 5:
-                ItemOption.instance?.IncreasedRange(player, Range_ScopeSize);
+                if (ItemOption.instance != null)
+                {
+                    ItemOption.instance.IncreasedRange(
+                        player,
+                        Range_ScopeSize
+                    );
+
+                    GameDataLogger.Instance?
+                        .LogItemAcquire(
+                            "Box3_RangeUp"
+                        );
+                }
                 break;
+
+
             case 6:
                 if (isInfinityMode)
                 {
-                    ItemOption.instance?.IncreaseBullet(player);
-                    GameObject.Find("MessageManager")
+                    if (ItemOption.instance != null)
+                    {
+                        ItemOption.instance.IncreaseBullet(
+                            player
+                        );
+
+                        GameDataLogger.Instance?
+                            .LogItemAcquire(
+                                "Box3_BulletCountUp_InfinityBonus"
+                            );
+
+
+                        GameObject.Find(
+                            "MessageManager"
+                        )
                         .GetComponent<MessageManager>()
-                        .ShowMessage("추가 공격 횟수 증가", 3f, new Color(1f, 0.2f, 0.2f));
+                        .ShowMessage(
+                            "추가 공격 횟수 증가",
+                            3f,
+                            new Color(
+                                1f,
+                                0.2f,
+                                0.2f
+                            )
+                        );
+                    }
                 }
                 else
                 {
-                    CollectionManager.Instance.Collect(CollectibleType.BlueOrb);
-                    GameObject.Find("MessageManager")
-                        .GetComponent<MessageManager>()
-                        .ShowMessage("오브3 획득", 3f, new Color(1f, 0.2f, 0.2f));
+                    CollectionManager.Instance.Collect(
+                        CollectibleType.BlueOrb
+                    );
+
+                    GameDataLogger.Instance?
+                        .LogItemAcquire(
+                            "Box3_BlueOrb"
+                        );
+
+
+                    GameObject.Find(
+                        "MessageManager"
+                    )
+                    .GetComponent<MessageManager>()
+                    .ShowMessage(
+                        "오브3 획득",
+                        3f,
+                        new Color(
+                            1f,
+                            0.2f,
+                            0.2f
+                        )
+                    );
                 }
+
                 break;
         }
     }

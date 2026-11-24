@@ -10,15 +10,21 @@ public class BossEnemy : MonoBehaviour
     public float health;
     public float attackDamage = 20f;
 
+
     [Header("UI 및 컴포넌트")]
-    public GameObject bossHealthBarUI; // 보스 체력바 UI 오브젝트
-    public Slider bossHealthSlider;    // 보스 체력 슬라이더
+    public GameObject bossHealthBarUI;
+    public Slider bossHealthSlider;
+
     public GameObject damageTextPrefab;
     public GameObject criticalDamageTextPrefab;
+
     private BossDialogueManager dialogueManager;
+
     public GameObject dialogueManagerObject;
 
+
     private bool isAlive = true;
+
     private Animator anim;
     private Rigidbody2D rigid;
     private BossAI bossAI;
@@ -26,51 +32,120 @@ public class BossEnemy : MonoBehaviour
 
     void Start()
     {
-        dialogueManager = dialogueManagerObject.GetComponent<BossDialogueManager>();
+        dialogueManager =
+            dialogueManagerObject
+                .GetComponent<BossDialogueManager>();
     }
+
 
     void Awake()
     {
-        anim = GetComponentInChildren<Animator>();
-        rigid = GetComponent<Rigidbody2D>();
-        bossAI = GetComponent<BossAI>();
+        anim =
+            GetComponentInChildren<Animator>();
+
+        rigid =
+            GetComponent<Rigidbody2D>();
+
+        bossAI =
+            GetComponent<BossAI>();
     }
+
 
     void OnEnable()
     {
         health = maxHealth;
         isAlive = true;
+
         UpdateHealthUI();
+
 
         if (bossHealthBarUI != null)
         {
-            bossHealthBarUI.SetActive(true);
+            bossHealthBarUI.SetActive(
+                true
+            );
         }
     }
+
 
     void Update()
     {
         if (bossHealthSlider != null)
         {
-            bossHealthSlider.value = health / maxHealth;
+            bossHealthSlider.value =
+                health / maxHealth;
         }
     }
 
-    public void TakeDamage(float damage, bool isCritical = false)
-    {
-        if (!isAlive) return;
 
+    // =========================================================
+    // 보스 피격
+    // =========================================================
+
+    public void TakeDamage(
+        float damage,
+        bool isCritical = false)
+    {
+        if (!isAlive)
+            return;
+
+
+        // 실제로 깎일 수 있는 체력만 계산
+        float actualDamage =
+            Mathf.Min(
+                damage,
+                Mathf.Max(
+                    health,
+                    0f
+                )
+            );
+
+
+        // 데미지 적용
         health -= damage;
-        health = Mathf.Clamp(health, 0, maxHealth);
+
+
+        health =
+            Mathf.Clamp(
+                health,
+                0f,
+                maxHealth
+            );
+
+
+        // =====================================================
+        // ✅ 보스에게 준 피해 기록
+        // =====================================================
+
+        GameDataLogger.Instance?
+            .LogBossDamage(
+                actualDamage,
+                isCritical
+            );
+
 
         UpdateHealthUI();
-        DrawDamage((int)damage, isCritical);
-        SoundManager.instance.PlaySFX(SoundManager.instance.Enemy_HurtClip);
 
-        if (health > 0 && bossAI != null)
+
+        DrawDamage(
+            (int)damage,
+            isCritical
+        );
+
+
+        SoundManager.instance.PlaySFX(
+            SoundManager.instance
+                .Enemy_HurtClip
+        );
+
+
+        if (health > 0 &&
+            bossAI != null)
         {
+            // 필요 시 피격 상태
             // bossAI.OnHit();
         }
+
 
         if (health <= 0)
         {
@@ -78,111 +153,267 @@ public class BossEnemy : MonoBehaviour
         }
     }
 
+
+    // =========================================================
+    // 체력 UI
+    // =========================================================
+
     public void UpdateHealthUI()
     {
         if (bossHealthSlider != null)
         {
-            bossHealthSlider.maxValue = maxHealth;
-            bossHealthSlider.value = health;
+            bossHealthSlider.maxValue =
+                maxHealth;
+
+
+            bossHealthSlider.value =
+                health;
         }
     }
 
-    private void DrawDamage(int damage, bool isCriticalHit)
+
+    // =========================================================
+    // 데미지 텍스트
+    // =========================================================
+
+    private void DrawDamage(
+        int damage,
+        bool isCriticalHit)
     {
-        Vector3 worldPosition = transform.position + new Vector3(0, 1.5f, 0); // 머리 위
-        GameObject canvas = GameObject.Find("Canvas");
+        Vector3 worldPosition =
+            transform.position +
+            new Vector3(
+                0,
+                1.5f,
+                0
+            );
 
-        if (canvas == null) return;
 
-        GameObject prefab = isCriticalHit ? criticalDamageTextPrefab : damageTextPrefab;
-        GameObject dmgText = Instantiate(prefab, canvas.transform);
-        dmgText.transform.position = worldPosition;
+        GameObject canvas =
+            GameObject.Find(
+                "Canvas"
+            );
 
-        var textComponent = dmgText.GetComponent<DamageText>();
+
+        if (canvas == null)
+            return;
+
+
+        GameObject prefab =
+            isCriticalHit
+                ? criticalDamageTextPrefab
+                : damageTextPrefab;
+
+
+        GameObject dmgText =
+            Instantiate(
+                prefab,
+                canvas.transform
+            );
+
+
+        dmgText.transform.position =
+            worldPosition;
+
+
+        DamageText textComponent =
+            dmgText.GetComponent<DamageText>();
+
+
         if (textComponent != null)
         {
-            textComponent.SetDamage(damage);
+            textComponent.SetDamage(
+                damage
+            );
         }
     }
+
+
+    // =========================================================
+    // 보스 사망
+    // =========================================================
 
     private void Die()
     {
+        // 중복 사망 방지
+        if (!isAlive)
+            return;
+
+
         isAlive = false;
 
-        // 모든 Invoke된 메서드 취소
-        CancelInvoke(); // BossEnemy.cs에서 호출 시 자기 자신에만 적용됨
-        bossAI.CancelInvoke(); // BossAI에서 예약된 MoveTowardsPlayer를 취소
 
-        // 애니메이션 처리
-        bossAI.Death_anim();
+        // =====================================================
+        // ✅ 보스 처치 기록
+        // GameManager.HandleGameClear()보다 먼저 실행해야 함
+        // =====================================================
+
+        GameDataLogger.Instance?
+            .LogBossKill();
+
+
+        Debug.Log(
+            "[GameDataLogger] 보스 처치 기록"
+        );
+
+
+        // Invoke 취소
+        CancelInvoke();
+
+
+        if (bossAI != null)
+        {
+            bossAI.CancelInvoke();
+
+
+            // 사망 애니메이션
+            bossAI.Death_anim();
+        }
+
 
         // 보스 사망 대사
-        StartCoroutine(dialogueManager.ShowDialogueById("Death"));
+        if (dialogueManager != null)
+        {
+            StartCoroutine(
+                dialogueManager
+                    .ShowDialogueById(
+                        "Death"
+                    )
+            );
+        }
 
-        // 보스 체력바 비활성화
+
+        // 체력바 비활성화
         if (bossHealthBarUI != null)
-            bossHealthBarUI.SetActive(false);
+        {
+            bossHealthBarUI.SetActive(
+                false
+            );
+        }
 
-        StartCoroutine(HandleDeathSequence());
+
+        StartCoroutine(
+            HandleDeathSequence()
+        );
     }
+
+
+    // =========================================================
+    // 보스 사망 후 게임 클리어
+    // =========================================================
 
     private IEnumerator HandleDeathSequence()
     {
-        // ✅ [수정] 게임 클리어 처리를 GameManager에 위임하고 바로 호출
         if (GameManager.instance != null)
         {
-            // GameManager에 클리어 상태를 알리고 스코어 저장 및 씬 로드를 위임
-            GameManager.instance.HandleGameClear();
+            GameManager.instance
+                .HandleGameClear();
         }
         else
         {
-            Debug.LogError("GameManager 인스턴스를 찾을 수 없습니다. 게임 클리어 로직이 실행되지 않았습니다.");
+            Debug.LogError(
+                "GameManager 인스턴스를 찾을 수 없습니다. " +
+                "게임 클리어 로직이 실행되지 않았습니다."
+            );
         }
-        // -----------------------------------------------------
 
-        // 실제 제거 처리 (비활성화 등)
-        StartCoroutine(DisableAfterDelay(3f)); // 만약 바로 비활성화 하고 싶으면 0초
 
-        // 씬 로드는 GameManager에서 담당하므로 여기서는 대기만 수행
+        StartCoroutine(
+            DisableAfterDelay(
+                3f
+            )
+        );
+
+
         yield return null;
     }
 
-    IEnumerator DisableAfterDelay(float delay)
+
+    IEnumerator DisableAfterDelay(
+        float delay)
     {
-        yield return new WaitForSeconds(delay);
-        gameObject.SetActive(false);
+        yield return
+            new WaitForSeconds(
+                delay
+            );
+
+
+        gameObject.SetActive(
+            false
+        );
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+
+    // =========================================================
+    // 공격 충돌
+    // =========================================================
+
+    private void OnTriggerEnter2D(
+        Collider2D collision)
     {
-        Player player = GameObject.FindWithTag("Player").GetComponent<Player>();
+        if (!isAlive)
+            return;
 
-        if (!isAlive) return;
 
-        // Bullet 데미지 처리
-        TestBullet bullet = collision.GetComponent<TestBullet>();
+        // =====================================================
+        // 기본 탄환
+        // =====================================================
+
+        TestBullet bullet =
+            collision.GetComponent<TestBullet>();
+
+
         if (bullet != null)
         {
-            TakeDamage(bullet.damage, bullet.isCritical);
+            TakeDamage(
+                bullet.damage,
+                bullet.isCritical
+            );
 
+
+            // 폭발탄일 경우 폭발 생성
             if (TestBullet.Explosion_Bullet)
             {
-                bullet.Explosion(transform.position);
+                bullet.Explosion(
+                    transform.position
+                );
             }
 
-            Destroy(collision.gameObject);
+
+            Destroy(
+                collision.gameObject
+            );
+
+
+            return;
         }
 
+
+        // =====================================================
         // 특수무기
-        if (collision.CompareTag("SpecialWeapons"))
+        // =====================================================
+
+        if (collision.CompareTag(
+            "SpecialWeapons"))
         {
-            float damage = collision.GetComponent<Special_Weapon>().damage;
-            TakeDamage(damage);
+            Special_Weapon specialWeapon =
+                collision.GetComponent
+                    <Special_Weapon>();
+
+
+            if (specialWeapon != null)
+            {
+                TakeDamage(
+                    specialWeapon.damage,
+                    false
+                );
+            }
         }
     }
+
 
     public bool IsAlive()
     {
-        return isAlive;  // 혹은 내부에서 사용하는 생존 여부 변수
+        return isAlive;
     }
 }
